@@ -7,55 +7,58 @@ const database = new Database()
 export const routes = [
     {
      method: 'GET',
-     path: buildRoutePath('/users'),
+     path: buildRoutePath('/tasks'),
      handler: (req, res) => {
         const { search } = req.query
-        const users = database.select('users', search ? {
+        const users = database.select('tasks', search ? {
             name: search,
-            email: search,
+            description: search,
+            final_date: search,
         } : null)
 
-        return res.end(JSON.stringify(users))
+        return res.end(JSON.stringify(tasks))
      }
     },
     {
         method: 'POST',
-        path: '/users',
+        path: buildRoutePath('/tasks'),
         handler: (req, res) => {
-            const {name, email} = req.body
+            const {name, description, final_date} = req.body
             
                     const user = {
                         id: randomUUID(),
                         name,
-                        email,
+                        description,
+                        final_date,
                     }
             
-                    database.insert('users', user)
+                    database.insert('tasks', tasks)
             
                     return res.writeHead(201).end()
         }
     },
     {
         method: 'DELETE',
-        path: buildRoutePath('/users/:id'),
+        path: buildRoutePath('/tasks/:id'),
         handlers: (req, res) => {
             const {id} = req.params
 
-            database.delete('users', id)
+            database.delete('tasks', id)
 
             return res.writeHead(204).end()
         },
     },
     {
         method: 'PUT',
-        path: buildRoutePath('/users/:id'),
+        path: buildRoutePath('/tasks/:id'),
         handlers: (req, res) => {
             const {id} = req.params
-            const {name, email} = req.body
+            const {name, description, final_date} = req.body
 
-            database.update('users', id, {
+            database.update('tasks', id, {
                 name,
-                email,
+                description,
+                final_date,
 
             })
 
