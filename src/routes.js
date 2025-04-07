@@ -17,8 +17,7 @@ export const routes = [
         } : [])
 
         if(tasks.length == 0) return res.end('Nada foi encontrado')
-        
-        return res.end(JSON.stringify(tasks))
+        else return res.end(JSON.stringify(tasks))
      }
     },
     {
@@ -41,9 +40,9 @@ export const routes = [
     },
     {
         method: 'DELETE',
-        path: buildRoutePath('/tasks/:id'),
-        handlers: (req, res) => {
-            const {id} = req.params
+        path: buildRoutePath('/tasks/delete'),
+        handler: (req, res) => {
+            const {id} = req.query
 
             database.delete('tasks', id)
 
@@ -51,20 +50,20 @@ export const routes = [
         },
     },
     {
-        method: 'PUT',
-        path: buildRoutePath('/tasks/:id'),
-        handlers: (req, res) => {
-            const {id} = req.params
+        method: 'PATCH',
+        path: buildRoutePath('/tasks/edit'),
+        handler: (req, res) => {
+            const {id} = req.query
             const {name, description, final_date} = req.body
 
-            database.update('tasks', id, {
+            const tasks = database.update('tasks', id, {
                 name,
                 description,
                 final_date,
 
             })
 
-            return res.writeHead(204).end()
+            return res.end(JSON.stringify(tasks))
         },
     },
 
