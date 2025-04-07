@@ -7,7 +7,7 @@ const database = new Database()
 export const routes = [
     {
      method: 'GET',
-     path: buildRoutePath('/tasks'),
+     path: buildRoutePath('/tasks/search'),
      handler: (req, res) => {
         const { search } = req.query
         const tasks = database.select('tasks', search ? {
