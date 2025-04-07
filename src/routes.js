@@ -10,7 +10,7 @@ export const routes = [
      path: buildRoutePath('/tasks'),
      handler: (req, res) => {
         const { search } = req.query
-        const users = database.select('tasks', search ? {
+        const tasks = database.select('tasks', search ? {
             name: search,
             description: search,
             final_date: search,
@@ -21,11 +21,11 @@ export const routes = [
     },
     {
         method: 'POST',
-        path: buildRoutePath('/tasks'),
+        path: buildRoutePath('/tasks/register'),
         handler: (req, res) => {
             const {name, description, final_date} = req.body
             
-                    const user = {
+                    const tasks = {
                         id: randomUUID(),
                         name,
                         description,
