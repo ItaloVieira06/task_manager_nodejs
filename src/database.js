@@ -24,7 +24,7 @@ export class Database{
 
         if(search){
           data = data.filter(row => {
-            return Object.entries(search).some((key, value) => {
+            return Object.entries(search).some(([key, value]) => {
               return row[key].toLowerCase().includes(value.toLowerCase())
             })
           })
@@ -46,7 +46,7 @@ export class Database{
     }
 
     delete(table, id){
-      const romIndex = this.#database[table].findIndex(row => row.id == id)
+      const rowIndex = this.#database[table].findIndex(row => row.id == id)
 
       if (rowIndex > -1){
         this.#database[table].splice(rowIndex, 1)
@@ -55,7 +55,7 @@ export class Database{
     }
 
     update(table, id, data){
-      const romIndex = this.#database[table].findIndex(row => row.id == id)
+      const rowIndex = this.#database[table].findIndex(row => row.id == id)
 
       if (rowIndex > -1){
         this.#database[table][rowIndex] = {id, ...data}

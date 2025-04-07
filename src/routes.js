@@ -7,21 +7,23 @@ const database = new Database()
 export const routes = [
     {
      method: 'GET',
-     path: buildRoutePath('/tasks/search'),
+     path: buildRoutePath('/tasks'),
      handler: (req, res) => {
         const { search } = req.query
         const tasks = database.select('tasks', search ? {
             name: search,
             description: search,
             final_date: search,
-        } : null)
+        } : [])
 
+        if(tasks.length == 0) return res.end('Nada foi encontrado')
+        
         return res.end(JSON.stringify(tasks))
      }
     },
     {
         method: 'POST',
-        path: buildRoutePath('/tasks/register'),
+        path: buildRoutePath('/tasks'),
         handler: (req, res) => {
             const {name, description, final_date} = req.body
             
@@ -34,7 +36,7 @@ export const routes = [
             
                     database.insert('tasks', tasks)
             
-                    return res.writeHead(201).end()
+                    return res.end(JSON.stringify(tasks))
         }
     },
     {
