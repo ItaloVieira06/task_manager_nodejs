@@ -6,43 +6,47 @@ const database = new Database()
 
 export const routes = [
     {
-     method: 'GET',
-     path: buildRoutePath('/tasks'),
-     handler: (req, res) => {
-        const { search } = req.query
-        const tasks = database.select('tasks', search ? {
-            name: search,
-            description: search,
-            final_date: search,
-        } : [])
+        method: 'GET',
+        path: buildRoutePath('/tasks'),
+        handler: (req, res) => {
+            const { search } = req.query
+            const tasks = database.select('tasks', search ? {
+                name: search,
+                content: search,
+            } : [])
 
-        if(tasks.length == 0) return res.end('Nada foi encontrado')
-        else return res.end(JSON.stringify(tasks))
-     }
+            if (tasks.length == 0) return res.end('Nada foi encontrado')
+            else return res.end(JSON.stringify(tasks))
+        }
     },
     {
         method: 'POST',
         path: buildRoutePath('/tasks'),
         handler: (req, res) => {
-            const {name, description, final_date} = req.body
-            
-                    const tasks = {
-                        id: randomUUID(),
-                        name,
-                        description,
-                        final_date,
-                    }
-            
-                    database.insert('tasks', tasks)
-            
-                    return res.end(JSON.stringify(tasks))
+            const { name, content } = req.body
+
+            if (typeof(content) !== "string" || typeof(name) !== "string") { return res.end("Valores inválidos") }
+            if (content === " " || name === " ") { return res.end("Valores inválidos") }
+
+            const tasks = {
+                id: randomUUID(),
+                name,
+                content,
+                isClosed: false,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            }
+
+            database.insert('tasks', tasks)
+
+            return res.end(JSON.stringify(tasks))
         }
     },
     {
         method: 'DELETE',
         path: buildRoutePath('/tasks/delete'),
         handler: (req, res) => {
-            const {id} = req.query
+            const { id } = req.query
 
             database.delete('tasks', id)
 
@@ -53,13 +57,14 @@ export const routes = [
         method: 'PATCH',
         path: buildRoutePath('/tasks/edit'),
         handler: (req, res) => {
-            const {id} = req.query
-            const {name, description, final_date} = req.body
+            const { id } = req.query
+            const { name, description, isClosed } = req.body
 
             const tasks = database.update('tasks', id, {
                 name,
                 description,
-                final_date,
+                isClosed,
+                updatedAt: new Date(),
 
             })
 

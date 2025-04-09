@@ -22,10 +22,10 @@ export class Database{
     select(table, search){
         let data = this.#database[table] ?? []
 
-        if(search){
+        if(search && search.length !== 0){
           data = data.filter(row => {
-            return Object.entries(search).some(([key, value]) => {
-              return row[key].toLowerCase().includes(value.toLowerCase())
+            return Object.entries(search).some(([_,value]) => {
+              return row["name"].toLowerCase().includes(value.toLowerCase())
             })
           })
         }
