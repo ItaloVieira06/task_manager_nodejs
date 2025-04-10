@@ -58,11 +58,14 @@ export const routes = [
         path: buildRoutePath('/tasks/edit'),
         handler: (req, res) => {
             const { id } = req.query
-            const { name, description, isClosed } = req.body
+            const { name, content, isClosed } = req.body
 
+            if (typeof(content) !== "string" || typeof(name) !== "string" || typeof(isClosed) !== 'boolean') { return res.end("Valores inválidos") }
+            if (content === " " || name === " ") { return res.end("Valores inválidos") }
+           
             const tasks = database.update('tasks', id, {
                 name,
-                description,
+                content,
                 isClosed,
                 updatedAt: new Date(),
 
