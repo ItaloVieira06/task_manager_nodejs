@@ -9,14 +9,36 @@ export const routes = [
         method: 'GET',
         path: buildRoutePath('/tasks'),
         handler: (req, res) => {
-            const { search } = req.query
-            const tasks = database.select('tasks', search ? {
-                name: search,
-                content: search,
-            } : [])
+            const { id, name, content } = req.query
 
-            if (tasks.length == 0) return res.end('Nada foi encontrado')
-            else return res.end(JSON.stringify(tasks))
+            if (id != undefined && name != undefined && content != undefined) { return res.end('Para pesquisas com filtros, utilize um (e apenas um) filtro de pesquisa!') }
+            if (id != undefined && name != undefined || id != undefined && content != undefined || name != undefined && content != undefined) { return res.end('Para pesquisas com filtros, utilize um (e apenas um) filtro de pesquisa!') }
+
+            if (!id == undefined) {
+                const tasks = database.select('tasks', id ? { id: id } : [])
+
+                if (tasks.length == 0) return res.end('Nada foi encontrado')
+                else return res.end(JSON.stringify(tasks))
+            }
+            if (!name == undefined) {
+                const tasks = database.select('tasks', name ? { name: name } : [])
+
+                if (tasks.length == 0) return res.end('Nada foi encontrado')
+                else return res.end(JSON.stringify(tasks))
+            }
+            if (!content == undefined) {
+                const tasks = database.select('tasks', content ? { content: content } : [])
+
+                if (tasks.length == 0) return res.end('Nada foi encontrado')
+                else return res.end(JSON.stringify(tasks))
+            }
+
+            if (id == undefined && name == undefined && content == undefined) {
+                const tasks = database.select('tasks', id ? { id: id } : [])
+
+                if (tasks.length == 0) return res.end('Nada foi encontrado')
+                else return res.end(JSON.stringify(tasks))
+            }
         }
     },
     {
@@ -25,7 +47,7 @@ export const routes = [
         handler: (req, res) => {
             const { name, content } = req.body
 
-            if (typeof(content) !== "string" || typeof(name) !== "string") { return res.end("Valores inválidos") }
+            if (typeof (content) !== "string" || typeof (name) !== "string") { return res.end("Valores inválidos") }
             if (content === " " || name === " ") { return res.end("Valores inválidos") }
 
             const tasks = {
@@ -60,18 +82,52 @@ export const routes = [
             const { id } = req.query
             const { name, content, isClosed } = req.body
 
-            if (typeof(content) !== "string" || typeof(name) !== "string" || typeof(isClosed) !== 'boolean') { return res.end("Valores inválidos") }
+            if (typeof (content) !== "string" && content !== undefined || typeof (name) !== "string" && name !== undefined || typeof (isClosed) !== 'boolean' && isClosed !== undefined) { return res.end("Valores inválidos") }
             if (content === " " || name === " ") { return res.end("Valores inválidos") }
-           
-            const tasks = database.update('tasks', id, {
-                name,
-                content,
-                isClosed,
-                updatedAt: new Date(),
 
-            })
+            if (isClosed == undefined) {
+                const tasks = database.update('tasks', id, {
+                    name,
+                    content,
+                    isClosed: false,
+                    updatedAt: new Date(),
 
-            return res.end(JSON.stringify(tasks))
+                })
+                return res.end(JSON.stringify(tasks))
+            }
+
+            if (name == undefined) {
+                const tasks = database.update('tasks', id, {
+                    content,
+                    isClosed,
+                    updatedAt: new Date(),
+
+                })
+                return res.end(JSON.stringify(tasks))
+            }
+            if (content == undefined) {
+                const tasks = database.update('tasks', id, {
+                    name,
+                    isClosed,
+                    updatedAt: new Date(),
+
+                })
+                return res.end(JSON.stringify(tasks))
+
+            }
+            else {
+                const tasks = database.update('tasks', id, {
+                    name,
+                    content,
+                    isClosed,
+                    updatedAt: new Date(),
+
+                })
+
+                return res.end(JSON.stringify(tasks))
+
+            }
+
         },
     },
 
