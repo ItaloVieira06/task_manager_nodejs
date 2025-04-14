@@ -22,10 +22,9 @@ export class Database {
 
   select(table, item) {
     let data = this.#database[table] ?? []
-    console.log(item)
 
     if (item && item.length !== 0) {
-      if (item == id) {
+      if(Object.keys(item)[0] == "id"){
         data = data.filter(row => {
           return Object.entries(item).some(([_, value]) => {
             return row["id"].toLowerCase().includes(value.toLowerCase())
@@ -33,21 +32,21 @@ export class Database {
         })
       }
 
-      if (name) {
+      if(Object.keys(item)[0] == "name"){
         data = data.filter(row => {
-          return Object.entries(name).some(([_, value]) => {
+          return Object.entries(item).some(([_, value]) => {
             return row["name"].toLowerCase().includes(value.toLowerCase())
           })
         })
       }
 
-      if (content) {
+      if(Object.keys(item)[0] == "content"){
         data = data.filter(row => {
-          return Object.entries(content).some(([_, value]) => {
-            return row["content"].toLowerCase().includes(value.toLowerCase())
-          })
+        return Object.entries(item).some(([_, value]) => {
+          return row["content"].toLowerCase().includes(value.toLowerCase())
         })
-      }
+      })}
+        
     }
 
     return data
@@ -71,7 +70,9 @@ export class Database {
     if (rowIndex > -1) {
       this.#database[table].splice(rowIndex, 1)
       this.#persist()
-    }
+    }else{
+      id = rowIndex
+      return id}
   }
 
   update(table, id, data) {
