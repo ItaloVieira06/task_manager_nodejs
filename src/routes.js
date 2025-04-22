@@ -71,6 +71,8 @@ export const routes = [
         path: buildRoutePath('/tasks/delete'),
         handler: (req, res) => {
             const { id } = req.query
+            var test_id = id
+            console.log(test_id)
         
             if(!id){return res.end("Por favor, insira o id da tarefa a ser deletada nos parâmetros!")}
             
@@ -78,7 +80,7 @@ export const routes = [
             if (tasks.length == 0) return res.end('A Tarefa a ser deletado na tabela não existe')
             database.delete('tasks', id)
 
-            return res.end('Tarefa Deletado!')
+            return res.end('Tarefa deletada: ' + test_id)
         },
     },
     {
@@ -107,18 +109,9 @@ export const routes = [
                 return res.end(JSON.stringify(tasks))
             }
 
-
-            if((content == undefined || content == " ") && (name == undefined || name == " ")){
-                const tasks = database.update('tasks', id, {
-                    isClosed,
-                    updatedAt: new Date(),
-
-                })
-                return res.end(JSON.stringify(tasks))
-            }
             if (name == undefined || name == " ") {
                 const tasks = database.update('tasks', id, {
-                    content,
+                    content: content,
                     isClosed,
                     updatedAt: new Date(),
 
@@ -127,7 +120,7 @@ export const routes = [
             }
             if (content == undefined || content == " " ) {
                 const tasks = database.update('tasks', id, {
-                    name,
+                    name: name,
                     isClosed,
                     updatedAt: new Date(),
 

@@ -73,6 +73,7 @@ export class Database {
     }else{
       id = rowIndex
       return id}
+    
   }
 
   update(table, id, data) {
@@ -84,5 +85,6 @@ export class Database {
       this.#persist()
 
     }
+    return data;
   }
 }
